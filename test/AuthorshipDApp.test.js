@@ -192,4 +192,16 @@ describe("AuthorshipDApp", function () {
         const oldContent = await app.getContent(oldHash);
         expect(oldContent.contentHash).to.equal(""); // Should be empty after delete
     });
+
+    it("should reward the creator with the configured token amount", async () => {
+        const customReward = ethers.parseUnits("250");
+        await app.connect(deployer).setRewardAmount(customReward);
+
+        const initialBalance = await rewardToken.balanceOf(creator.address);
+
+        await app.connect(creator).registerContent("QmRewardCheck");
+
+        const finalBalance = await rewardToken.balanceOf(creator.address);
+        expect(finalBalance - initialBalance).to.equal(customReward);
+    });
 });
