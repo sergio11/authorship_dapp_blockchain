@@ -57,7 +57,7 @@ This project leverages several modern technologies to create a decentralized con
 - It simplifies the workflow by allowing us to easily compile contracts, run tests, and deploy them on Ethereum networks, including Polygon’s network.
 - Hardhat’s built-in network emulation also makes it easy to test the DApp locally before deployment.
 
-### 💰 **ERC-20 Token (Reward System)**
+### 🎉 **ERC-20 Token (Reward System)**
 - The project utilizes an **ERC-20 token** as a reward mechanism for creators. This token is transferred to content creators whenever they register new content, ensuring they are incentivized for their contributions.
 - ERC-20 is a standard for fungible tokens on the Ethereum blockchain, providing interoperability with other projects and platforms.
 
@@ -65,12 +65,6 @@ This project leverages several modern technologies to create a decentralized con
 - **Chai** and **Mocha** are used to write and execute unit tests for the smart contracts.
   - **Chai** provides a BDD (Behavior-Driven Development) assertion library to test the contract’s logic.
   - **Mocha** is the testing framework that allows us to run our tests, providing hooks and a clean test structure.
-
-### 🌐 **Metamask (for Interaction)**
-- **Metamask** is used as the wallet for interacting with the DApp, allowing creators, admins, and users to sign transactions and connect to the Ethereum and Polygon networks from the browser.
-
-### 🔌 **Ether.js**
-- **Ether.js** is a library that enables JavaScript to interact with the Ethereum and Polygon blockchains. It is used in the project to handle contract interactions, like sending transactions and calling smart contract functions, from the frontend or test scripts.
 
 ## 🧩 Key Components
 
