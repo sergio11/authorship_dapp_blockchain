@@ -1,0 +1,12 @@
+{
+  "name": "AuthorshipDApp",
+  "version": "0.0.1",
+  "description": "AuthorshipDApp is an educational project exploring how blockchain can be used to prove digital authorship. It lets users register content on-chain to create immutable, verifiable proof of authorship.",
+  "author": "Sergio Sánchez",
+  "license": "MIT",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@openzeppelin/contracts": "^5.3.0",
+    "hardhat": "^2.22.19"
+  }
+}
