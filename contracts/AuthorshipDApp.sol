@@ -32,17 +32,28 @@ contract AuthorshipDApp is IAuthorshipDApp, Ownable, AccessControl, ReentrancyGu
     mapping(address => uint256) private _contentCount;
 
     /**
-     * @dev Initializes the contract with the RewardToken address and sets up roles.
-     * @param _rewardToken The address of the RewardToken contract.
-     */
-    constructor(address initialAddress, address _rewardToken) Ownable(initialAddress) {
-        // Setup roles: the deployer is both the creator and admin
-        _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
-        _grantRole(CREATOR_ROLE, msg.sender);
+    * @dev Constructor for the AuthorshipDApp contract.
+    *      Initializes the contract by assigning ownership, setting up access roles, and
+    *      defining the reward token contract.
+    *
+    * @param initialOwner The address that will be granted contract ownership and all admin/creator roles.
+    * @param _rewardToken The address of the deployed ERC20-compatible reward token (e.g., RewardToken).
+    *
+    * Requirements:
+    * - `initialOwner` will be granted `DEFAULT_ADMIN_ROLE`, `ADMIN_ROLE`, and `CREATOR_ROLE`.
+    * - The ownership of the contract (`Ownable`) will also be transferred to `initialOwner`.
+    * - The reward token must already be deployed and conform to the expected interface.
+    */
+    constructor(address initialOwner, address _rewardToken) Ownable(initialOwner) {
+        // Grant all essential roles to the initial owner
+        _grantRole(DEFAULT_ADMIN_ROLE, initialOwner);
+        _grantRole(CREATOR_ROLE, initialOwner);
+        _grantRole(ADMIN_ROLE, initialOwner);
 
-        // Set the RewardToken address
+        // Set the reward token contract
         _erc20RewardToken = RewardToken(_rewardToken);
     }
+
 
     /**
      * @dev Modifier to restrict actions to creators only.
@@ -107,10 +118,17 @@ contract AuthorshipDApp is IAuthorshipDApp, Ownable, AccessControl, ReentrancyGu
         require(bytes(_contents[contentHash].contentHash).length != 0, "Content not registered");
         require(_contents[contentHash].author == msg.sender, "Not the author");
 
-        // Increment version and update content hash
-        _contents[contentHash].version++;
-        _contents[contentHash].contentHash = newContentHash;
-        _contents[contentHash].timestamp = block.timestamp;
+        // Increment version for the updated content
+        Content memory updatedContent = _contents[contentHash]; // Store the existing content temporarily
+        updatedContent.version++;
+        updatedContent.contentHash = newContentHash;
+        updatedContent.timestamp = block.timestamp;
+        
+        // Delete the old content entry from the mapping
+        delete _contents[contentHash];
+
+        // Store the updated content under the new content hash
+        _contents[newContentHash] = updatedContent;
 
         // Emit the content updated event
         emit ContentUpdated(msg.sender, newContentHash, block.timestamp);
@@ -142,6 +160,32 @@ contract AuthorshipDApp is IAuthorshipDApp, Ownable, AccessControl, ReentrancyGu
      */
     function setRewardAmount(uint256 newRewardAmount) external override onlyOwner {
         _rewardAmount = newRewardAmount;
+    }
+
+    /**
+    * @dev Assigns the admin role to a specified address. 
+    *      Only the contract owner can execute this function.
+    *      This allows the designated address to perform administrative tasks on the platform.
+    *      The `AdminAdded` event is emitted when the role is assigned.
+    *
+    * @param account The address to be assigned the admin role.
+    */
+    function assignAdminRole(address account) external override onlyOwner {
+        grantRole(ADMIN_ROLE, account);
+        emit AdminAdded(account);
+    }
+
+    /**
+    * @dev Revokes the admin role from a specified address. 
+    *      Only the contract owner can execute this function.
+    *      This removes the administrative privileges from the specified address.
+    *      The `AdminRemoved` event is emitted when the role is revoked.
+    *
+    * @param account The address from which the admin role will be revoked.
+    */
+    function revokeAdminRole(address account) external override onlyOwner {
+        revokeRole(ADMIN_ROLE, account);
+        emit AdminRemoved(account);
     }
 
     /**

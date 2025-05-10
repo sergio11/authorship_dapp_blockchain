@@ -55,6 +55,26 @@ interface IAuthorshipDApp {
     function removeCreator(address creator) external;
 
     /**
+    * @dev Assigns the admin role to a specified address. 
+    *      Only the contract owner can execute this function.
+    *      This allows the designated address to perform administrative tasks on the platform.
+    *      The `AdminAdded` event is emitted when the role is assigned.
+    *
+    * @param account The address to be assigned the admin role.
+    */
+    function assignAdminRole(address account) external;
+
+    /**
+    * @dev Revokes the admin role from a specified address. 
+    *      Only the contract owner can execute this function.
+    *      This removes the administrative privileges from the specified address.
+    *      The `AdminRemoved` event is emitted when the role is revoked.
+    *
+    * @param account The address from which the admin role will be revoked.
+    */
+    function revokeAdminRole(address account) external;
+
+    /**
      * @dev Sets the reward amount that will be given to creators for registering content.
      * Only the owner can call this.
      * @param newRewardAmount The new reward amount (in token units) for content registration.
@@ -118,4 +138,17 @@ interface IAuthorshipDApp {
      * @param amount The amount of reward tokens transferred.
      */
     event RewardClaimed(address indexed creator, uint256 amount);
+
+    /**
+    * @dev Emitted when a new admin is assigned the ADMIN_ROLE.
+    * @param newAdmin The address that was granted admin permissions.
+    */
+    event AdminAdded(address indexed newAdmin);
+
+    /**
+    * @dev Emitted when an admin has their ADMIN_ROLE revoked.
+    * @param admin The address that had admin permissions removed.
+    */
+    event AdminRemoved(address indexed admin);
+
 }
